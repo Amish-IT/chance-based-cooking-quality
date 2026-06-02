@@ -6,5 +6,5 @@
 	"UniqueID": "AIT.ChanceBasedCookingQuality",
 	"EntryDLL": "ChanceBasedCookingQuality.dll",
 	"MinimumAPIVersion": "4.0.0",
-	"UpdateKeys": []
+	"UpdateKeys": [ "Nexus:47067", "GitHub:Amish-IT/chance-based-cooking-quality" ]
 }
