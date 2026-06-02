@@ -1,7 +1,7 @@
 {
 	"Name": "Chance-Based Cooking Quality",
 	"Author": "AIT",
-	"Version": "1.0.0",
+	"Version": "1.0.1",
 	"Description": "Makes cooked food sometimes inherit the quality of its ingredients.",
 	"UniqueID": "AIT.ChanceBasedCookingQuality",
 	"EntryDLL": "ChanceBasedCookingQuality.dll",
