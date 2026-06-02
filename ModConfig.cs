@@ -54,6 +54,7 @@ namespace ait.ChanceBasedCookingQuality {
 			CascadingDowngrades = CASCADING_DOWNGRADES_DEFAULT;
 			SeasoningMode = SEASONING_MODE_DEFAULT;
 			IgnoreQualitylessCraftedIngredients = IGNORE_QUALITYLESS_CRAFTED_INGREDIENTS_DEFAULT;
+			IgnoreQualitylessOtherIngredients = IGNORE_QUALITYLESS_OTHER_INGREDIENTS_DEFAULT;
 			
 			QualitylessCraftedIngredientIDs = new List<string>() { "247", "419", "432", "246", "245", "423",
 					"Cornucopia_BuckwheatFlour", "Cornucopia_SemolinaFlour", "Cornucopia_Molasses", "Cornucopia_WholeGrainFlour" };
