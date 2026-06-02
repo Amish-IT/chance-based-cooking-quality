@@ -127,7 +127,7 @@ namespace ait.ChanceBasedCookingQuality {
 		private static void RollQualityUnseasoned(Item cookedItem, int[] consumedQualityCounts) {
 			for(int index = 0; index < CraftingRolls.Count; index++)
 				if(CraftingRolls[index].CookedItemID == cookedItem.ItemId) {
-					if(CraftingRolls[index].HasSameQualityCounts(consumedQualityCounts)) {
+					if(!CraftingRolls[index].HasSameQualityCounts(consumedQualityCounts)) {
 						CraftingRolls.RemoveAt(index);
 						break;
 					}
