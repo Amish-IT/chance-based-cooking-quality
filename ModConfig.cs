@@ -55,8 +55,9 @@ namespace ait.ChanceBasedCookingQuality {
 			SeasoningMode = SEASONING_MODE_DEFAULT;
 			IgnoreQualitylessCraftedIngredients = IGNORE_QUALITYLESS_CRAFTED_INGREDIENTS_DEFAULT;
 			
-			QualitylessCraftedIngredientIDs = new List<string>() { "247", "419", "432" };
-			QualitylessOtherIngredientIDs = new List<string>() { "724", "152", "78", "157", "153", "74", "340", "246", "245", "423" };
+			QualitylessCraftedIngredientIDs = new List<string>() { "247", "419", "432", "246", "245", "423",
+					"Cornucopia_BuckwheatFlour", "Cornucopia_SemolinaFlour", "Cornucopia_Molasses", "Cornucopia_WholeGrainFlour" };
+			QualitylessOtherIngredientIDs = new List<string>() { "724", "152", "78", "157", "153", "74", "340" };
 		}
 		
 		//
@@ -123,14 +124,14 @@ namespace ait.ChanceBasedCookingQuality {
 					() => { return IgnoreQualitylessCraftedIngredients; },
 					(bool value) => { IgnoreQualitylessCraftedIngredients = value; },
 					() => { return "Ignore Quality-less Crafted Ingredients"; },
-					() => { return string.Format("If true, ignore the quality of quality-less crafted ingredients when rolling a cooked item's quality.  Turn this off if you have a way to get these with quality.  Includes Oil, Vinegar, and Truffle Oil. (default: {0})",
+					() => { return string.Format("If true, ignore the quality of quality-less crafted ingredients when rolling a cooked item's quality.  Turn this off if you have a way to get these with quality.  Includes Oil, Vinegar, Truffle Oil, Wheat Flour, Sugar, and Rice. (default: {0})",
 							IGNORE_QUALITYLESS_CRAFTED_INGREDIENTS_DEFAULT); });
 			// IgnoreQualitylessOtherIngredients:
 			configMenu.AddBoolOption(manifest,
 					() => { return IgnoreQualitylessOtherIngredients; },
 					(bool value) => { IgnoreQualitylessOtherIngredients = value; },
 					() => { return "Ignore Quality-less Other Ingredients"; },
-					() => { return string.Format("If true, ignore the quality of other quality-less ingredients when rolling a cooked item's quality.  Includes Wheat Flour, Sugar, Rice, Maple Syrup, Seaweed, Cave Carrots, Algae, Honey, and Prismatic Shards. (default: {0})",
+					() => { return string.Format("If true, ignore the quality of other quality-less ingredients when rolling a cooked item's quality.  Includes Maple Syrup, Seaweed, Cave Carrots, Algae, Honey, and Prismatic Shards. (default: {0})",
 							IGNORE_QUALITYLESS_OTHER_INGREDIENTS_DEFAULT); });
 		}
 	}
