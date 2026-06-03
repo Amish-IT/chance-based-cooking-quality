@@ -158,11 +158,11 @@ namespace ait.ChanceBasedCookingQuality {
 			cookedItem.Quality = StardewValley.Object.lowQuality;
 			if(Random.Shared.NextDouble() * 100.0 < ModEntry.Config.ChanceToRetainIridium * iridiumFactor)
 				cookedItem.Quality = StardewValley.Object.bestQuality;
-			else if(!ModEntry.Config.CascadingDowngrades)
+			else if(!ModEntry.Config.CascadingDowngrades && iridiumFactor > 0.0)
 				cookedItem.Quality = StardewValley.Object.highQuality;
 			else if(Random.Shared.NextDouble() * 100.0 < ModEntry.Config.ChanceToRetainGold * goldFactor)
 				cookedItem.Quality = StardewValley.Object.highQuality;
-			else if(!ModEntry.Config.CascadingDowngrades)
+			else if(!ModEntry.Config.CascadingDowngrades && goldFactor > 0.0)
 				cookedItem.Quality = StardewValley.Object.medQuality;
 			else if(Random.Shared.NextDouble() * 100.0 < ModEntry.Config.ChanceToRetainSilver * silverFactor)
 				cookedItem.Quality = StardewValley.Object.medQuality;
