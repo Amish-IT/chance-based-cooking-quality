@@ -92,6 +92,57 @@ namespace ait.ChanceBasedCookingQuality {
 			return matcher.Instructions();
 		}
 		
+		internal static int RollQuality(int[] consumedQualityCounts) {
+			int numIngredients = 0;
+			foreach(int i in consumedQualityCounts)
+				numIngredients += i;
+			double iridiumFactor, goldFactor, silverFactor;
+			if(ModEntry.Config.RequireSameQualityOrBetter) {
+				iridiumFactor = consumedQualityCounts[StardewValley.Object.bestQuality] == numIngredients ? 1.0 : 0.0;
+				goldFactor = consumedQualityCounts[StardewValley.Object.highQuality]
+						+ consumedQualityCounts[StardewValley.Object.bestQuality] == numIngredients ? 1.0 : 0.0;
+				silverFactor = consumedQualityCounts[StardewValley.Object.medQuality]
+						+ consumedQualityCounts[StardewValley.Object.highQuality]
+						+ consumedQualityCounts[StardewValley.Object.bestQuality] == numIngredients ? 1.0 : 0.0;
+			} else {
+				iridiumFactor = (double)consumedQualityCounts[StardewValley.Object.bestQuality] / numIngredients;
+				goldFactor = (double)(consumedQualityCounts[StardewValley.Object.highQuality]
+						+ consumedQualityCounts[StardewValley.Object.bestQuality]) / numIngredients;
+				silverFactor = (double)(consumedQualityCounts[StardewValley.Object.medQuality]
+						+ consumedQualityCounts[StardewValley.Object.highQuality]
+						+ consumedQualityCounts[StardewValley.Object.bestQuality]) / numIngredients;
+			}
+			
+			if(Random.Shared.NextDouble() * 100.0 < ModEntry.Config.ChanceToRetainIridium * iridiumFactor)
+				return StardewValley.Object.bestQuality;
+			if(!ModEntry.Config.CascadingDowngrades && iridiumFactor > 0.0)
+				return StardewValley.Object.highQuality;
+			if(Random.Shared.NextDouble() * 100.0 < ModEntry.Config.ChanceToRetainGold * goldFactor)
+				return StardewValley.Object.highQuality;
+			if(!ModEntry.Config.CascadingDowngrades && goldFactor > 0.0)
+				return StardewValley.Object.medQuality;
+			if(Random.Shared.NextDouble() * 100.0 < ModEntry.Config.ChanceToRetainSilver * silverFactor)
+				return StardewValley.Object.medQuality;
+			return StardewValley.Object.lowQuality;
+		}
+		
+		internal static int ApplySeasoning(int unseasonedQuality) {
+			switch(ModEntry.Config.SeasoningMode) {
+				case "Upgrade":
+					if(unseasonedQuality < StardewValley.Object.highQuality)
+						return unseasonedQuality + 1;
+					return StardewValley.Object.bestQuality;
+				case "Minimum Gold":
+					if(unseasonedQuality < StardewValley.Object.highQuality)
+						return StardewValley.Object.highQuality;
+					return unseasonedQuality;
+				default:
+					ModEntry.ModMonitor.Log(string.Format("Unsupported SeasoningMode: '{0}'!", ModEntry.Config.SeasoningMode), StardewModdingAPI.LogLevel.Error);
+					break;
+			}
+			return StardewValley.Object.lowQuality;
+		}
+		
 		private static int[] CountConsumedQualities(CraftingRecipe recipe, List<IInventory> additionalInventories) {
 			int[] qualityCounters = new int[StardewValley.Object.bestQuality + 1];
 			List<IInventory> allInventories = new List<IInventory>();
@@ -135,77 +186,27 @@ namespace ait.ChanceBasedCookingQuality {
 					return;
 				}
 			
-			int numIngredients = 0;
-			foreach(int i in consumedQualityCounts)
-				numIngredients += i;
-			double iridiumFactor, goldFactor, silverFactor;
-			if(ModEntry.Config.RequireSameQualityOrBetter) {
-				iridiumFactor = consumedQualityCounts[StardewValley.Object.bestQuality] == numIngredients ? 1.0 : 0.0;
-				goldFactor = consumedQualityCounts[StardewValley.Object.highQuality]
-						+ consumedQualityCounts[StardewValley.Object.bestQuality] == numIngredients ? 1.0 : 0.0;
-				silverFactor = consumedQualityCounts[StardewValley.Object.medQuality]
-						+ consumedQualityCounts[StardewValley.Object.highQuality]
-						+ consumedQualityCounts[StardewValley.Object.bestQuality] == numIngredients ? 1.0 : 0.0;
-			} else {
-				iridiumFactor = (double)consumedQualityCounts[StardewValley.Object.bestQuality] / numIngredients;
-				goldFactor = (double)(consumedQualityCounts[StardewValley.Object.highQuality]
-						+ consumedQualityCounts[StardewValley.Object.bestQuality]) / numIngredients;
-				silverFactor = (double)(consumedQualityCounts[StardewValley.Object.medQuality]
-						+ consumedQualityCounts[StardewValley.Object.highQuality]
-						+ consumedQualityCounts[StardewValley.Object.bestQuality]) / numIngredients;
-			}
-			
-			cookedItem.Quality = StardewValley.Object.lowQuality;
-			if(Random.Shared.NextDouble() * 100.0 < ModEntry.Config.ChanceToRetainIridium * iridiumFactor)
-				cookedItem.Quality = StardewValley.Object.bestQuality;
-			else if(!ModEntry.Config.CascadingDowngrades && iridiumFactor > 0.0)
-				cookedItem.Quality = StardewValley.Object.highQuality;
-			else if(Random.Shared.NextDouble() * 100.0 < ModEntry.Config.ChanceToRetainGold * goldFactor)
-				cookedItem.Quality = StardewValley.Object.highQuality;
-			else if(!ModEntry.Config.CascadingDowngrades && goldFactor > 0.0)
-				cookedItem.Quality = StardewValley.Object.medQuality;
-			else if(Random.Shared.NextDouble() * 100.0 < ModEntry.Config.ChanceToRetainSilver * silverFactor)
-				cookedItem.Quality = StardewValley.Object.medQuality;
-			
+			cookedItem.Quality = RollQuality(consumedQualityCounts);
 			CraftingRolls.Add(new CraftingRoll(cookedItem.ItemId, consumedQualityCounts, cookedItem.Quality));
 		}
 		
 		private static void RollQualitySeasoned(Item cookedItem, int[] consumedQualityCounts) {
 			for(int index = 0; index < CraftingRolls.Count; index++)
-				if(CraftingRolls[index].CookedItemID == cookedItem.ItemId) {
+				if(CraftingRolls[index].CookedItemID == cookedItem.ItemId)
 					if(!CraftingRolls[index].HasSameQualityCounts(consumedQualityCounts))
 						CraftingRolls.RemoveAt(index);
-					else if(CraftingRolls[index].SeasoningQuality == -1)
-						cookedItem.Quality = CraftingRolls[index].RolledQuality;
 					else {
+						if(CraftingRolls[index].SeasoningQuality == -1)
+							CraftingRolls[index].SeasoningQuality = ApplySeasoning(CraftingRolls[index].RolledQuality);
 						cookedItem.Quality = CraftingRolls[index].SeasoningQuality;
 						return;
 					}
-					break;
-				}
 			
-			RollQualityUnseasoned(cookedItem, consumedQualityCounts);
-			
-			switch(ModEntry.Config.SeasoningMode) {
-				case "Upgrade":
-					if(cookedItem.Quality < StardewValley.Object.highQuality)
-						cookedItem.Quality++;
-					else
-						cookedItem.Quality = StardewValley.Object.bestQuality;
-					break;
-				case "Minimum Gold":
-					if(cookedItem.Quality < StardewValley.Object.highQuality)
-						cookedItem.Quality = StardewValley.Object.highQuality;
-					break;
-				default:
-					ModEntry.ModMonitor.Log(string.Format("Unsupported SeasoningMode: '{0}'!", ModEntry.Config.SeasoningMode), StardewModdingAPI.LogLevel.Error);
-					break;
-			}
-			foreach(CraftingRoll cr in CraftingRolls)
-				if(cr.CookedItemID == cookedItem.ItemId) {
-					cr.SeasoningQuality = cookedItem.Quality;
-					break;
-				}
+			cookedItem.Quality = RollQuality(consumedQualityCounts);
+			CraftingRoll roll = new CraftingRoll(cookedItem.ItemId, consumedQualityCounts, cookedItem.Quality);
+			roll.SeasoningQuality = ApplySeasoning(roll.RolledQuality);
+			CraftingRolls.Add(roll);
+			cookedItem.Quality = roll.SeasoningQuality;
 		}
 		
 		private static void ClearCraftingRoll(Item item) {
