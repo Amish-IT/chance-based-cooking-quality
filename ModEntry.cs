@@ -25,6 +25,9 @@ namespace ait.ChanceBasedCookingQuality {
 			Config = helper.ReadConfig<ModConfig>();
 			
 			helper.Events.GameLoop.GameLaunched += (object? sender, GameLaunchedEventArgs args) => {
+				Compat.CornucopiaCompat.TryDetect(helper);
+				Compat.LoveOfCookingCompat.TryDetect(helper);
+				
 				IGenericModConfigMenuApi? configMenu = helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
 				if(configMenu != null) { // if GMCM installed
 					configMenu.Register(ModManifest, () => { Config = new ModConfig(); }, () => { Helper.WriteConfig<ModConfig>(Config); });
@@ -36,6 +39,10 @@ namespace ait.ChanceBasedCookingQuality {
 				original: AccessTools.Method(typeof(StardewValley.Menus.CraftingPage), "clickCraftingRecipe"),
 				transpiler: new HarmonyMethod(typeof(ClickCraftingRecipeTranspiler), nameof(ClickCraftingRecipeTranspiler.Transpiler))
 			);
+		}
+		
+		public override object? GetApi() {
+			return new ChanceBasedCookingQualityAPI();
 		}
 	}
 	

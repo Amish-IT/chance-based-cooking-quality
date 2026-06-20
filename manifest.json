@@ -1,10 +1,20 @@
 {
 	"Name": "Chance-Based Cooking Quality",
 	"Author": "AIT",
-	"Version": "1.0.2",
+	"Version": "1.1.0",
 	"Description": "Makes cooked food sometimes inherit the quality of its ingredients.",
 	"UniqueID": "AIT.ChanceBasedCookingQuality",
 	"EntryDLL": "ChanceBasedCookingQuality.dll",
 	"MinimumAPIVersion": "4.0.0",
-	"UpdateKeys": [ "Nexus:47067", "GitHub:Amish-IT/chance-based-cooking-quality" ]
+	"UpdateKeys": [ "Nexus:47067", "GitHub:Amish-IT/chance-based-cooking-quality" ],
+	"Dependencies": [
+		{
+			"UniqueID": "Cornucopia.MoreCrops",
+			"IsRequired": false
+		},
+		{
+			"UniqueID": "blueberry.LoveOfCooking",
+			"IsRequired": false
+		}
+	]
 }

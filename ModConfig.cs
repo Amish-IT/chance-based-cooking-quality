@@ -15,6 +15,7 @@ namespace ait.ChanceBasedCookingQuality {
 		private const string SEASONING_MODE_DEFAULT = "Upgrade";
 		private const bool IGNORE_QUALITYLESS_CRAFTED_INGREDIENTS_DEFAULT = true;
 		private const bool IGNORE_QUALITYLESS_OTHER_INGREDIENTS_DEFAULT = true;
+		private const bool COMPAT_LOC_USE_ADDED_SEASONINGS_DEFAULT = true;
 		
 		private static readonly string[] SeasoningModes;
 		
@@ -34,6 +35,7 @@ namespace ait.ChanceBasedCookingQuality {
 		public string SeasoningMode { get; set; }
 		public bool IgnoreQualitylessCraftedIngredients { get; set; }
 		public bool IgnoreQualitylessOtherIngredients { get; set; }
+		public bool CompatLOCUseAddedSeasonings { get; set; }
 		
 		private List<string> QualitylessCraftedIngredientIDs;
 		private List<string> QualitylessOtherIngredientIDs;
@@ -55,9 +57,9 @@ namespace ait.ChanceBasedCookingQuality {
 			SeasoningMode = SEASONING_MODE_DEFAULT;
 			IgnoreQualitylessCraftedIngredients = IGNORE_QUALITYLESS_CRAFTED_INGREDIENTS_DEFAULT;
 			IgnoreQualitylessOtherIngredients = IGNORE_QUALITYLESS_OTHER_INGREDIENTS_DEFAULT;
+			CompatLOCUseAddedSeasonings = COMPAT_LOC_USE_ADDED_SEASONINGS_DEFAULT;
 			
-			QualitylessCraftedIngredientIDs = new List<string>() { "247", "419", "432", "246", "245", "423",
-					"Cornucopia_BuckwheatFlour", "Cornucopia_SemolinaFlour", "Cornucopia_Molasses", "Cornucopia_WholeGrainFlour" };
+			QualitylessCraftedIngredientIDs = new List<string>() { "247", "419", "432", "246", "245", "423" };
 			QualitylessOtherIngredientIDs = new List<string>() { "724", "152", "78", "157", "153", "74", "340" };
 		}
 		
@@ -65,7 +67,21 @@ namespace ait.ChanceBasedCookingQuality {
 		// instance methods
 		//
 		
-		public bool IsIgnored(string ingredientID) {
+		internal bool RegisterQualitylessCraftedIngredient(string ingredientID) {
+			if(QualitylessCraftedIngredientIDs.Contains(ingredientID))
+				return false;
+			QualitylessCraftedIngredientIDs.Contains(ingredientID);
+			return true;
+		}
+		
+		internal bool RegisterQualitylessOtherIngredient(string ingredientID) {
+			if(QualitylessOtherIngredientIDs.Contains(ingredientID))
+				return false;
+			QualitylessOtherIngredientIDs.Contains(ingredientID);
+			return true;
+		}
+		
+		internal bool IsIgnored(string ingredientID) {
 			if(IgnoreQualitylessCraftedIngredients && QualitylessCraftedIngredientIDs.Contains(ingredientID))
 				return true;
 			if(IgnoreQualitylessOtherIngredients && QualitylessOtherIngredientIDs.Contains(ingredientID))
@@ -134,6 +150,18 @@ namespace ait.ChanceBasedCookingQuality {
 					() => { return "Ignore Quality-less Other Ingredients"; },
 					() => { return string.Format("If true, ignore the quality of other quality-less ingredients when rolling a cooked item's quality.  Includes Maple Syrup, Seaweed, Cave Carrots, Algae, Honey, and Prismatic Shards. (default: {0})",
 							IGNORE_QUALITYLESS_OTHER_INGREDIENTS_DEFAULT); });
+			
+			if(Compat.LoveOfCookingCompat.Installed) {
+				configMenu.AddSubHeader(manifest,
+						() => "The Love of Cooking");
+				// CompatLOCUseAddedSeasonings:
+				configMenu.AddBoolOption(manifest,
+						() => { return CompatLOCUseAddedSeasonings; },
+						(bool value) => { CompatLOCUseAddedSeasonings = value; },
+						() => { return "Use Added Seasonings"; },
+						() => { return string.Format("If true, use the seasonings added by The Love of Cooking.  Turn this off if you've disabled these in the Love of Cooking config, otherwise Qi Seasoning will follow the additional seasoning logic instead of your selected Seasoning Mode above. (default: {0})",
+								COMPAT_LOC_USE_ADDED_SEASONINGS_DEFAULT); });
+			}
 		}
 	}
 	
