@@ -9,7 +9,7 @@ namespace ait.ChanceBasedCookingQuality.Compat {
 		//
 		
 		internal static void TryDetect(StardewModdingAPI.IModHelper helper) {
-			IBetterCrafting? betterCrafting = helper.ModRegistry.GetApi<IBetterCrafting>("");
+			IBetterCrafting? betterCrafting = helper.ModRegistry.GetApi<IBetterCrafting>("leclair.bettercrafting");
 			if(betterCrafting == null)
 				return;
 			
