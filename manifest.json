@@ -15,8 +15,7 @@
 		{
 			"UniqueID": "blueberry.LoveOfCooking",
 			"IsRequired": false
-		}
-		 ,
+		},
 		{
 			"UniqueID": "leclair.bettercrafting",
 			"IsRequired": false
