@@ -27,6 +27,7 @@ namespace ait.ChanceBasedCookingQuality {
 			helper.Events.GameLoop.GameLaunched += (object? sender, GameLaunchedEventArgs args) => {
 				Compat.CornucopiaCompat.TryDetect(helper);
 				Compat.LoveOfCookingCompat.TryDetect(helper);
+				Compat.BetterCraftingCompat.TryDetect(helper);
 				
 				IGenericModConfigMenuApi? configMenu = helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
 				if(configMenu != null) { // if GMCM installed
