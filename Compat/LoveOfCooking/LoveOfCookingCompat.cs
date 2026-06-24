@@ -44,7 +44,8 @@ namespace ait.ChanceBasedCookingQuality.Compat {
 			
 			int[] seasonedQualities = new int[StardewValley.Object.bestQuality + 1];
 			foreach(StardewValley.Object o in cookEvent.CookedItems)
-				seasonedQualities[o.Quality] += o.Stack / cookEvent.Recipe.numberProducedPerCraft;
+				if(!ModEntry.Config.IsIgnored(o.ItemId))
+					seasonedQualities[o.Quality] += o.Stack / cookEvent.Recipe.numberProducedPerCraft;
 			
 			int[] outputQualityCounts = new int[StardewValley.Object.bestQuality + 1];
 			for(int outputIndex = 0; outputIndex < cookEvent.ConsumedItems.Count; outputIndex++) {
