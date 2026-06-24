@@ -23,7 +23,8 @@ namespace ait.ChanceBasedCookingQuality.Compat {
 			
 			int[] inputQualities = new int[StardewValley.Object.bestQuality + 1];
 			foreach(Item i in postCraft.ConsumedItems)
-				inputQualities[i.Quality] += i.Stack;
+				if(!ModEntry.Config.IsIgnored(i.ItemId))
+					inputQualities[i.Quality] += i.Stack;
 			
 			postCraft.Item.Quality = ClickCraftingRecipeTranspiler.RollQuality(inputQualities);
 		}
